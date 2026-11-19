@@ -534,7 +534,12 @@ server <- function(input, output, session){
     
     p<- catch_agg2 %>%
       ggplot2::ggplot(ggplot2::aes(x = `Cod Mortality`, y = `Haddock Mortality`))+
-      ggplot2::geom_point(ggplot2::aes(colour = under_acl_cod2, size = under_acl_had2)) +
+      ggplot2::geom_point(ggplot2::aes(colour = under_acl_cod2, size = under_acl_had2,
+                                       text = paste0("Policy: ", policy_name,
+                                                     "<br>Cod mortality (mt): ", `Cod Mortality`,
+                                                     "<br>Haddock mortality (mt): ", `Haddock Mortality`,
+                                                     "<br>% under cod ACL: ", round(under_acl_cod, 1),
+                                                     "<br>% under haddock ACL: ", round(under_acl_hadd, 1)))) +
       ggplot2::scale_color_manual(values = c("50-59%" = "#A9DFBF", "60-69%" = "#7DCEA0",
                                              "70-79%" = "#52BE80","80-89%" = "#27AE60",
                                              "90-100%" = "#1B5E20", "Less than 50%" = "red3"))+
@@ -555,7 +560,7 @@ server <- function(input, output, session){
       ggplot2::ylab("Recreational haddock mortality (mt)")+
       ggplot2::xlab("Recreational cod mortality (mt)")
     
-    fig<- plotly::ggplotly(p) %>%
+    fig<- plotly::ggplotly(p, tooltip = "text") %>%
       plotly::style(textposition = "top center")
     fig
   })
@@ -620,7 +625,10 @@ server <- function(input, output, session){
                            hadd = median(hadd))
         
         p1<- catch %>% ggplot2::ggplot(ggplot2::aes(x = `CV($M)`, y = cod))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>CV ($M): ", round(`CV($M)`, 2),
+                                       "<br>Cod mortality (mt): ", cod))) +
           ggplot2::geom_hline( yintercept =cod_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=cod_acl(), label="Cod ACL", x=catch$`CV($M)`[catch$policy_name == "SQ"])) +
@@ -630,7 +638,7 @@ server <- function(input, output, session){
                         subtitle = "testing")+
           ggplot2::theme(legend.position = "none")
         
-        fig1<- plotly::ggplotly(p1) %>%
+        fig1<- plotly::ggplotly(p1, tooltip = "text") %>%
           plotly::style(textposition = "top center")
         
         # --- decide which arrow to show ---
@@ -743,7 +751,10 @@ server <- function(input, output, session){
                            hadd = median(hadd))
         
         p2<- catch %>% ggplot2::ggplot(ggplot2::aes(x = `CV($M)`, y = hadd))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>CV ($M): ", round(`CV($M)`, 2),
+                                       "<br>Haddock mortality (mt): ", hadd))) +
           ggplot2::geom_hline( yintercept =had_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=had_acl(), label="Had ACL", x=catch$`CV($M)`[catch$policy_name == "SQ"])) +
@@ -753,7 +764,7 @@ server <- function(input, output, session){
                         subtitle = "testing")+
           ggplot2::theme(legend.position = "none")
         
-        fig2<- plotly::ggplotly(p2) %>%
+        fig2<- plotly::ggplotly(p2, tooltip = "text") %>%
           plotly::style(textposition = "top center")
         
         # --- decide which arrow to show ---
@@ -861,7 +872,10 @@ server <- function(input, output, session){
                            `Haddock Discard Mortality` = median(disc_mort_hadd))
         
         p3<- catch %>% ggplot2::ggplot(ggplot2::aes(x = `Cod Discard Mortality`, y = `Cod Total Mortality`))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>Cod discard mortality (mt): ", round(`Cod Discard Mortality`, 1),
+                                       "<br>Cod mortality (mt): ", `Cod Total Mortality`))) +
           ggplot2::geom_hline( yintercept =cod_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=cod_acl(), label="Cod ACL", x=catch$`Cod Discard Mortality`[catch$policy_name == "SQ"])) +
@@ -871,7 +885,7 @@ server <- function(input, output, session){
                         subtitle = "")+
           ggplot2::theme(legend.position = "none")
         
-        fig3<- plotly::ggplotly(p3)%>%
+        fig3<- plotly::ggplotly(p3, tooltip = "text")%>%
           plotly::style(textposition = "top center") %>% 
           plotly::layout(
             title = list(font = list(size = 14)))
@@ -917,7 +931,10 @@ server <- function(input, output, session){
                            `Haddock Discard Mortality` = median(disc_mort_hadd))
         
         p4<- catch %>% ggplot2::ggplot(ggplot2::aes(x = `Haddock Discard Mortality`, y = `Haddock Total Mortality`))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>Haddock discard mortality (mt): ", round(`Haddock Discard Mortality`, 1),
+                                       "<br>Haddock mortality (mt): ", `Haddock Total Mortality`))) +
           ggplot2::geom_hline( yintercept =had_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=had_acl(), label="Had ACL", x=catch$`Cod Discard Mortality`[catch$policy_name == "SQ"])) +
@@ -927,7 +944,7 @@ server <- function(input, output, session){
                         subtitle = "testing")+
           ggplot2::theme(legend.position = "none")
         
-        fig4<- plotly::ggplotly(p4)%>%
+        fig4<- plotly::ggplotly(p4, tooltip = "text")%>%
           plotly::style(textposition = "top center")%>% 
           plotly::layout(
             title = list(font = list(size = 14)))
@@ -970,7 +987,10 @@ server <- function(input, output, session){
                            hadd = median(hadd))
         
         p5<- catch %>% ggplot2::ggplot(ggplot2::aes(x = Trips, y = `cod`))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>Trips: ", format(round(Trips), big.mark = ","),
+                                       "<br>Cod mortality (mt): ", cod))) +
           ggplot2::geom_hline( yintercept = cod_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=cod_acl(), label="Cod ACL", x=catch$`Trips`[catch$policy_name == "SQ"]), angle=90) +
@@ -980,7 +1000,7 @@ server <- function(input, output, session){
                         subtitle = "testing")+
           ggplot2::theme(legend.position = "none")
         
-        fig5<- plotly::ggplotly(p5)%>%
+        fig5<- plotly::ggplotly(p5, tooltip = "text")%>%
           plotly::style(textposition = "top center")%>% 
           plotly::layout(
             title = list(font = list(size = 14)))
@@ -1025,7 +1045,10 @@ server <- function(input, output, session){
         
         
         p6<- catch %>% ggplot2::ggplot(ggplot2::aes(x =Trips , y = hadd))+
-          ggplot2::geom_point() +
+          ggplot2::geom_point(
+            ggplot2::aes(text = paste0("Policy: ", policy_name,
+                                       "<br>Trips: ", format(round(Trips), big.mark = ","),
+                                       "<br>Haddock mortality (mt): ", hadd))) +
           ggplot2::geom_hline( yintercept = had_acl())+
           ggplot2::geom_text(ggplot2::aes(label = policy_name), check_overlap = TRUE)+
           ggplot2::geom_text(ggplot2::aes(y=had_acl(), label="Had ACL", x=catch$`Trips`[catch$policy_name == "SQ"])) +
@@ -1035,7 +1058,7 @@ server <- function(input, output, session){
                         subtitle = "testing")+
           ggplot2::theme(legend.position = "none")
         
-        fig6<- plotly::ggplotly(p6)%>%
+        fig6<- plotly::ggplotly(p6, tooltip = "text")%>%
           plotly::style(textposition = "top center")%>% 
           plotly::layout(
             title = list(font = list(size = 14)))
